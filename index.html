@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Paper Danfo Playtest</title>
+<meta name="description" content="A short, witty survey for Paper Danfo playtesters: what they loved, what killed the fun, and what they want next.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Permanent+Marker&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0e0b16;
+    --ink: #1d1b20;
+    --paper: #f4eee0;
+    --paper-2: #e8dcc2;
+    --pink: #e9468c;
+    --mustard: #e5bd43;
+    --teal: #17596c;
+    --vermillion: #be4e36;
+    --green: #1f6b3a;
+    --f-scribble: "Caveat", "Comic Sans MS", cursive;
+    --f-marker: "Permanent Marker", Impact, sans-serif;
+    --f-body: "Inter", -apple-system, system-ui, sans-serif;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) { }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--night); color: var(--paper); font-family: var(--f-body); line-height: 1.5; min-height: 100dvh;
+    background-image:
+      radial-gradient(rgba(233, 70, 140, .06) 1px, transparent 2px),
+      radial-gradient(rgba(229, 189, 67, .05) 1px, transparent 2px);
+    background-size: 42px 42px, 68px 68px;
+    background-position: 0 0, 21px 34px;
+  }
+  .shell { max-width: 640px; margin: 0 auto; padding: 20px 16px 80px; }
+  header.top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 10px 0 18px; }
+  .brand { font-family: var(--f-marker); color: var(--pink); font-size: 22px; letter-spacing: .5px; transform: rotate(-2deg); text-shadow: 2px 2px 0 var(--ink); }
+  .brand small { display: block; font-family: var(--f-scribble); color: var(--paper); font-size: 14px; transform: rotate(1deg); margin-top: -2px; letter-spacing: .5px; }
+  .counter { background: var(--paper); color: var(--ink); font-weight: 800; font-size: 13px; padding: 6px 10px; border-radius: 4px;
+    clip-path: polygon(2% 10%, 10% 2%, 92% 0%, 100% 15%, 98% 85%, 92% 100%, 10% 96%, 0% 88%); min-width: 90px; text-align: center; letter-spacing: .3px; }
+
+  /* progress bar: a bus-route strip; a yellow danfo blob rides the filled portion */
+  .track { position: relative; height: 14px; background: rgba(244, 238, 224, .12); border-radius: 10px; overflow: visible; margin-bottom: 8px; }
+  .track .fill { position: absolute; inset: 0 auto 0 0; width: 0%; background: linear-gradient(90deg, var(--green), #2a8f4a); border-radius: 10px; transition: width .4s ease; }
+  .track .bus { position: absolute; top: -11px; left: 0; transform: translateX(-50%); transition: left .4s ease; width: 34px; height: 20px; pointer-events: none; filter: drop-shadow(0 2px 0 rgba(0,0,0,.4)); }
+  .track .bus svg { display: block; width: 100%; height: 100%; }
+  /* numbered pips: visited pages are tappable to jump back */
+  .pips { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; margin: 8px 0 20px; }
+  .pips button { background: transparent; color: rgba(244, 238, 224, .6); border: 2px solid rgba(244, 238, 224, .35); min-height: 36px; min-width: 32px;
+    border-radius: 50%; font: 700 13px var(--f-body); cursor: pointer; padding: 0; transition: transform .08s ease; }
+  .pips button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--mustard); color: var(--mustard); }
+  .pips button[data-state="visited"] { background: rgba(31, 107, 58, .35); border-color: var(--green); color: var(--paper); }
+  .pips button[data-state="current"] { background: var(--pink); border-color: var(--pink); color: #fff; box-shadow: 0 2px 0 var(--ink); transform: scale(1.08); }
+  .pips button:disabled { opacity: .4; cursor: not-allowed; }
+  .pips button:focus-visible { outline: 3px solid var(--mustard); outline-offset: 2px; }
+
+  /* each page is a cream paper card with a torn-paper top edge */
+  .card { background: var(--paper); color: var(--ink); border-radius: 2px; padding: 22px 20px 24px; margin-bottom: 14px; position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.2);
+    background-image: radial-gradient(rgba(29, 27, 32, .07) .8px, transparent 1.3px);
+    background-size: 7px 7px;
+  }
+  .card::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 14px; background: var(--paper);
+    clip-path: polygon(0 100%, 3% 30%, 6% 100%, 10% 20%, 14% 100%, 18% 25%, 22% 100%, 26% 15%, 30% 100%, 35% 30%, 40% 100%, 46% 20%, 52% 100%, 58% 25%, 64% 100%, 70% 15%, 76% 100%, 82% 30%, 88% 100%, 94% 20%, 100% 100%);
+  }
+  .card::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 14px; background: var(--paper);
+    clip-path: polygon(0 0, 3% 70%, 6% 0, 10% 80%, 14% 0, 18% 75%, 22% 0, 26% 85%, 30% 0, 35% 70%, 40% 0, 46% 80%, 52% 0, 58% 75%, 64% 0, 70% 85%, 76% 0, 82% 70%, 88% 0, 94% 80%, 100% 0);
+  }
+
+  h1, h2, h3 { color: var(--ink); margin: 0; }
+  h1 { font-family: var(--f-marker); font-size: 32px; line-height: 1.1; letter-spacing: .5px; }
+  h2 { font-family: var(--f-marker); font-size: 24px; line-height: 1.2; margin-bottom: 4px; }
+  .sub { color: #4a4650; font-size: 15px; margin-top: 6px; }
+  .intent { font-family: var(--f-scribble); color: var(--pink); font-size: 22px; line-height: 1.1; transform: rotate(-1deg); display: inline-block; }
+
+  /* meme image: an Aki and Pawpaw reaction panel per page (owner uploads via assets, falls back to the sticker below) */
+  .meme { margin: 10px -4px 14px; position: relative; }
+  .meme img { display: block; width: 100%; max-width: 420px; margin: 0 auto; border-radius: 6px; border: 3px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--mustard), 5px 5px 0 var(--ink); transform: rotate(-.5deg); }
+  .meme .cap { display: block; text-align: center; font-family: var(--f-scribble); color: var(--pink); font-size: 20px; margin-top: 6px; transform: rotate(.5deg); }
+  .meme + .sticker { margin-top: 10px; }
+  /* meme / sticker panel on each page: a CSS collage, swap for a real image later */
+  .sticker { background: var(--night); border-radius: 4px; padding: 16px 14px; margin: 14px -4px 18px; color: var(--paper);
+    box-shadow: inset 0 0 0 2px var(--mustard), 2px 2px 0 var(--ink);
+    transform: rotate(-.6deg); position: relative; overflow: hidden;
+    background-image: radial-gradient(rgba(229, 189, 67, .18) 1px, transparent 1.6px); background-size: 10px 10px;
+  }
+  .sticker .big { font-family: var(--f-marker); color: var(--mustard); font-size: 28px; line-height: 1; transform: rotate(1deg); display: inline-block; }
+  .sticker .hand { font-family: var(--f-scribble); color: var(--paper); font-size: 20px; line-height: 1.1; display: block; margin-top: 4px; }
+  .sticker .tape { position: absolute; top: -6px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 60px; height: 14px;
+    background: rgba(232, 220, 194, .88); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+
+  .q { margin-top: 18px; }
+  .q .label { font-weight: 700; color: var(--ink); display: block; margin-bottom: 10px; }
+  .q .hint { font-family: var(--f-scribble); color: var(--pink); font-size: 18px; margin: -6px 0 8px; }
+
+  /* chips (radio / multi): tap targets ≥44px, obvious selected state */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border-radius: 24px; background: #fff; color: var(--ink);
+    border: 2px solid var(--ink); font-weight: 600; font-size: 15px; cursor: pointer; user-select: none; line-height: 1.1; }
+  .chip input { position: absolute; left: -9999px; }
+  .chip:hover { background: var(--paper-2); }
+  .chip:has(input:checked) { background: var(--pink); color: #fff; border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); transform: translate(-1px, -1px); }
+  .chip:focus-within { outline: 3px solid var(--mustard); outline-offset: 2px; }
+  .chip.sm { font-size: 13px; padding: 6px 10px; min-height: 36px; }
+
+  /* 1-5 scale: emoji faces with labels under */
+  .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
+  .scale label { background: #fff; border: 2px solid var(--ink); border-radius: 12px; padding: 10px 6px 8px; text-align: center; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 70px; justify-content: center; }
+  .scale label:has(input:checked) { background: var(--mustard); box-shadow: 2px 2px 0 var(--ink); transform: translate(-1px,-1px); }
+  .scale .face { font-size: 24px; line-height: 1; }
+  .scale .word { font-size: 11px; font-weight: 700; letter-spacing: .3px; color: var(--ink); text-transform: uppercase; }
+
+  input[type="text"], input[type="number"], textarea {
+    width: 100%; font: inherit; font-family: var(--f-body); font-size: 15px; padding: 11px 12px; border-radius: 6px;
+    background: #fff; color: var(--ink); border: 2px solid var(--ink); outline: none; resize: vertical;
+  }
+  input:focus, textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(233, 70, 140, .25); }
+  textarea { min-height: 72px; }
+
+  /* nav row (back / next) with the chunky Paper Danfo ticket-button feel */
+  .nav { display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 24px; }
+  .btn { font-family: var(--f-marker); font-size: 20px; letter-spacing: .5px; padding: 12px 20px; min-height: 50px; border: 2px solid var(--ink); background: var(--mustard); color: var(--ink); border-radius: 4px; cursor: pointer; box-shadow: 3px 3px 0 var(--ink); transition: transform .08s ease, box-shadow .08s ease; }
+  .btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn.ghost { background: transparent; color: var(--paper); box-shadow: none; border-color: rgba(244, 238, 224, .4); }
+  .btn.ghost:hover { background: rgba(244, 238, 224, .08); }
+  .btn.big { font-size: 24px; padding: 14px 26px; min-height: 58px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* small admin footer */
+  .foot { color: rgba(244, 238, 224, .55); font-size: 12px; text-align: center; margin-top: 24px; padding: 0 10px; }
+  .foot a { color: var(--mustard); text-decoration: none; border-bottom: 1px dashed rgba(229, 189, 67, .5); }
+  .foot a:hover { color: var(--pink); border-color: var(--pink); }
+  .pill { display: inline-block; background: rgba(229, 189, 67, .18); color: var(--mustard); padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* thanks page: a big ticket feel */
+  .thanks-card { text-align: center; padding: 32px 20px 36px; }
+  .thanks-card .huge { font-family: var(--f-marker); color: var(--pink); font-size: 42px; line-height: 1; transform: rotate(-2deg); display: inline-block; text-shadow: 3px 3px 0 var(--ink); }
+  .thanks-card .danfo { font-size: 72px; display: block; margin: 10px auto; }
+  .summary { background: var(--night); color: var(--paper); border-radius: 4px; padding: 14px; margin: 20px 0; text-align: left; font-size: 13px; max-height: 220px; overflow-y: auto; }
+  .summary dt { font-weight: 700; color: var(--mustard); margin-top: 8px; }
+  .summary dd { margin: 0 0 6px; color: var(--paper); }
+
+  /* admin panel (owner only) */
+  .admin { position: fixed; top: 10px; right: 10px; z-index: 100; }
+  .admin button { background: var(--night); color: var(--paper); border: 1px solid rgba(244, 238, 224, .3); padding: 6px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; opacity: .5; }
+  .admin button:hover { opacity: 1; }
+  .admin-panel { display: none; position: fixed; inset: 20px; background: var(--paper); color: var(--ink); border-radius: 6px; padding: 20px; overflow-y: auto; z-index: 101; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .admin-panel.on { display: block; }
+  .admin-panel h3 { margin-bottom: 10px; }
+  .admin-panel pre { background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 4px; font-size: 11px; overflow: auto; max-height: 60vh; }
+  .admin-panel .close { float: right; background: var(--ink); color: var(--paper); border: 0; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+
+  /* reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    .track .fill, .track .bus { transition: none; }
+    .btn { transition: none; }
+  }
+  @media (max-width: 420px) {
+    h1 { font-size: 26px; }
+    .brand { font-size: 18px; }
+    .sticker .big { font-size: 22px; }
+    .scale label { min-height: 60px; padding: 8px 4px 6px; }
+    .scale .face { font-size: 20px; }
+    .scale .word { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+  <div class="admin" id="admin" hidden>
+    <button type="button" id="admin-toggle">⚙ admin</button>
+  </div>
+  <div class="admin-panel" id="admin-panel">
+    <button type="button" class="close" id="admin-close">close</button>
+    <h3>Local responses (preview mode)</h3>
+    <p class="sub">These are the responses sitting in this browser's storage. When a Supabase config is wired, submissions also post to the project's <code>survey_responses</code> table. See <a id="dash-link" href="#" target="_blank">your Supabase table editor</a> for the real data.</p>
+    <p><button type="button" class="btn" id="export-csv" style="min-height:40px; font-size:14px; padding:8px 14px;">Export as CSV</button>
+       <button type="button" class="btn" id="clear-local" style="min-height:40px; font-size:14px; padding:8px 14px; background:var(--vermillion); color:#fff;">Clear local</button></p>
+    <pre id="dump"></pre>
+  </div>
+
+  <div class="shell">
+    <header class="top">
+      <div class="brand">PAPER DANFO<small>playtest survey · 5 mins</small></div>
+      <div class="counter" id="counter">1 of 7</div>
+    </header>
+
+    <div class="track" aria-hidden="true">
+      <div class="fill" id="fill"></div>
+      <div class="bus" id="bus" aria-hidden="true">
+        <svg viewBox="0 0 34 20" xmlns="http://www.w3.org/2000/svg">
+          <!-- yellow danfo, side view -->
+          <path d="M2.5 3 L30 3 L32 7 L32 14 L30 15 L4 15 L2 13 Z" fill="#f5c92a" stroke="#1d1b20" stroke-width="1.4" stroke-linejoin="round"/>
+          <!-- windows (dark glass) -->
+          <path d="M5 5 L29.2 5 L30.5 7.2 L5 7.2 Z" fill="#2a2638"/>
+          <!-- window frames (3 panes) -->
+          <line x1="12" y1="5" x2="12" y2="7.2" stroke="#1d1b20" stroke-width=".9"/>
+          <line x1="19" y1="5" x2="19" y2="7.2" stroke="#1d1b20" stroke-width=".9"/>
+          <line x1="25.5" y1="5" x2="25.5" y2="7.2" stroke="#1d1b20" stroke-width=".9"/>
+          <!-- waist line -->
+          <line x1="3.5" y1="10" x2="30.5" y2="10" stroke="#be4e36" stroke-width=".8"/>
+          <!-- headlight -->
+          <rect x="30.4" y="8.5" width="1.4" height="2" rx=".4" fill="#fff6c2"/>
+          <!-- wheels -->
+          <circle cx="9" cy="15.5" r="2.6" fill="#1d1b20"/>
+          <circle cx="9" cy="15.5" r="1.1" fill="#8d8a93"/>
+          <circle cx="25" cy="15.5" r="2.6" fill="#1d1b20"/>
+          <circle cx="25" cy="15.5" r="1.1" fill="#8d8a93"/>
+        </svg>
+      </div>
+    </div>
+    <nav class="pips" id="pips" aria-label="Jump to a page you've already started"></nav>
+
+    <main id="main"></main>
+
+    <p class="foot">
+      <span class="pill" id="mode-pill">preview mode</span>
+      Nothing you type leaves this browser until you tap <b>Send</b>.
+      Takes about 5 minutes · say what you really think ·
+      <a href="#" id="restart-foot">start over</a>
+    </p>
+  </div>
+
+<script>
+// ---- config: paste these in and republish, else responses stay in localStorage ----------------
+const SUPABASE_URL = "https://qmztlynivltrylffpwem.supabase.co";
+const SUPABASE_KEY = "sb_publishable_1JuOOfJkOaA9lByoRQHTyw_gY1Zqh4c";
+const SUPABASE_TABLE = "survey_responses";
+const OWNER_HINT_WORD = "ayomi"; // visible admin toggle if the viewer's user agent / stored flag mentions this
+// ----------------------------------------------------------------------------------------------
+// Meme images per page. Keys are page titles; values are {src, cap} where cap is the handwritten line underneath.
+// To swap: upload JPGs through the artifact assets store, paste each URL in here, republish. One Aki & Pawpaw frame per page.
+// If an entry is missing, that page just shows the paper-sticker fallback.
+const MEMES = {
+  "welcome":          { src: "./images/welcome.jpg", cap: "oya, wetin you think?" },
+  "Your runs":        { src: "./images/runs.jpg", cap: "receipts, please" },
+  "How fun is it, honestly?": null,
+  "The difficulty":   { src: "./images/difficulty.jpg", cap: "chai! e hard?" },
+  "Power kegs":       { src: "./images/kegs.jpg", cap: "which one wake you?" },
+  "Controls & menus": { src: "./images/controls.jpg", cap: "buttons dey confuse?" },
+  "Garage, wheel, flex": { src: "./images/garage.jpg", cap: "Plenty colours dey" },
+  "Open mic":         null,
+};
+
+const PAGES = [
+  { // page 0: welcome
+    kind: "welcome",
+    sticker: ["ONE QUESTION:", "wetin you really think?"],
+    render: () => html`
+      <h1>Oya, wetin you think?</h1>
+      <p class="sub"><span class="intent">five minutes · say the real</span></p>
+      <p class="sub" style="margin-top:14px;">
+        The bounty is settled. Now I need to know what hooked you, what killed the fun, and what I'm missing before I build the next version.
+        No boring questions, no essay fields unless you want to.
+      </p>
+      <p class="sub">Your answers are only used to make Paper Danfo better. No name, no login.</p>
+    `,
+  },
+  { // page 1: your runs
+    kind: "page",
+    title: "Your runs",
+    tag: "Numbers first",
+    sticker: ["RECEIPTS,", "please"],
+    questions: [
+      { id: "runs", label: "How many times did you play?", kind: "radio",
+        options: ["Once", "A few", "Lots", "I lost count"] },
+      { id: "best_km", label: "Best distance so far?", kind: "number", hint: "km, roughly", min: 0, max: 999999 },
+      { id: "where", label: "Where'd you play? (tick all that apply)", kind: "multi",
+        options: ["Phone", "Tablet", "Desktop / laptop"] },
+      { id: "device", label: "If phone or tablet, which one?", kind: "text", placeholder: "iPhone 13, Pixel 7a, Samsung A54…" },
+    ],
+  },
+  { // page 2: fun
+    kind: "page",
+    title: "How fun is it, honestly?",
+    tag: "The point of the whole thing",
+    sticker: ["ENJOYMENT:", "boring ← → banger"],
+    questions: [
+      { id: "fun_rating", label: "Rate it", kind: "scale5",
+        words: ["meh", "it's ok", "good", "sweet", "banger"], faces: ["😐", "🙂", "😄", "🤩", "🔥"] },
+      { id: "fun_best", label: "What's the best thing about it?", kind: "textarea",
+        placeholder: "The moment Iron Danfo smashed through the asteroid field…", hint: "one line is fine" },
+      { id: "quit_reason", label: "What makes you put the phone down?", kind: "multi",
+        options: ["Too hard", "Got bored", "Had to go", "Phone was dying", "Nothing — I just stop when I crash", "Repeated too much"] },
+    ],
+  },
+  { // page 3: difficulty + obstacles
+    kind: "page",
+    title: "The difficulty",
+    tag: "Fair, unfair, or 'wahala'",
+    sticker: ["WAHALA METER:", "which one no gree?"],
+    questions: [
+      { id: "diff_curve", label: "The difficulty curve is…", kind: "radio",
+        options: ["Too easy", "Starts easy, ramps hard", "About right", "Hard from the start", "All over the place"] },
+      { id: "unfair_obs", label: "Which obstacle feels UNFAIR? (tick any)", kind: "multi",
+        options: ["Okada", "Keke", "BRT bus", "Asteroid", "Big asteroid", "G-Wagon", "Benz", "Sienna", "Corolla", "Beetle", "Faragon danfo", "Other danfo"] },
+      { id: "boring_stretch", label: "Is there a stretch where it stops being fun? When?", kind: "text", placeholder: "After ~200 km it felt the same…" },
+    ],
+  },
+  { // page 4: kegs
+    kind: "page",
+    title: "Power kegs",
+    tag: "Carry go, Shine your eye, etc.",
+    sticker: ["KEG RATINGS:", "which one wake you up?"],
+    questions: [
+      { id: "keg_love", label: "Which power kegs do you LOVE?", kind: "multi",
+        options: ["Carry Go (green)", "Shine Your Eye (yellow)", "Reverse (white)", "Black Hole (purple)", "Iron Danfo (grey)"] },
+      { id: "keg_weak", label: "Which one does NOTHING for you?", kind: "multi",
+        options: ["Carry Go", "Shine Your Eye", "Reverse", "Black Hole", "Iron Danfo", "They're all good"] },
+      { id: "keg_want", label: "A new keg you want?", kind: "text", placeholder: "e.g. 'horn that scatters cars'…" },
+    ],
+  },
+  { // page 5: UX
+    kind: "page",
+    title: "Controls & menus",
+    tag: "Found what you needed?",
+    sticker: ["UX CHECK:", "did Settings dey hide?"],
+    questions: [
+      { id: "controls_clear", label: "Were the controls clear from the first run?", kind: "radio",
+        options: ["Yes, obvious", "Took a couple runs", "Confusing"] },
+      { id: "menu_found", label: "Which menus did you find?", kind: "multi",
+        options: ["Settings (⚙)", "Garage (skins)", "Board (leaderboard)", "How to", "Spin wheel", "Only some of these", "What menus?"] },
+      { id: "flipped", label: "Did you flip the controls in Settings?", kind: "radio",
+        options: ["Yes", "No", "Didn't notice there's a flip"] },
+      { id: "ux_annoy", label: "One thing in the UI that annoyed you?", kind: "text", placeholder: "Buttons too small / score hard to read / …" },
+    ],
+  },
+  { // page 6: garage + social
+    kind: "page",
+    title: "Garage, wheel, flex",
+    tag: "Skins, spins, share",
+    sticker: ["SHOWROOM:", "did you flex a skin?"],
+    questions: [
+      { id: "bought_skin", label: "Did you buy a skin?", kind: "radio",
+        options: ["Yes", "No", "Wanted to but didn't"] },
+      { id: "fav_skin", label: "Favourite skin so far?", kind: "text", placeholder: "Candy, Owambe, Iroko Wood, Ankara…" },
+      { id: "spun_wheel", label: "Did you spin the wheel?", kind: "radio",
+        options: ["Yes, often", "Once or twice", "No"] },
+      { id: "shared", label: "Did you share a run (that HD card)?", kind: "radio",
+        options: ["Yes", "No", "Thought about it"] },
+      { id: "flex_skin", label: "Did seeing someone's skin on the leaderboard make you want it?", kind: "radio",
+        options: ["Yes", "A little", "No", "Didn't look at the board"] },
+    ],
+  },
+  { // page 7: open mic
+    kind: "page",
+    title: "Open mic",
+    tag: "Say the thing",
+    sticker: ["ONE ADD,", "ONE CUT, one yarn"],
+    questions: [
+      { id: "add_one", label: "One thing I should ADD", kind: "textarea", placeholder: "If I could add one feature, mode, mechanic, skin, world…" },
+      { id: "cut_one", label: "One thing I should CUT", kind: "textarea", placeholder: "That doesn't work. Cut it." },
+      { id: "anything", label: "Anything else?", kind: "textarea", placeholder: "Stories, screenshots, random thoughts, Lagos driving tips…" },
+      { id: "contact", label: "If you want to be told when the next version drops, drop a handle (optional)", kind: "text", placeholder: "@you on IG / X / email" },
+    ],
+  },
+  { // page 8: thanks
+    kind: "thanks",
+  },
+];
+
+// ---------------- state ----------------
+const KEY = "pd_survey_v1";
+const RID_KEY = "pd_survey_rid_v1";
+function newId() { try { return crypto.randomUUID(); } catch (e) { return "r_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10); } }
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (s && typeof s === "object") { s.maxPage = s.maxPage || s.page || 0; return s; }
+  } catch (e) { }
+  return { page: 0, maxPage: 0, answers: {}, started_at: new Date().toISOString(), rid: newId() };
+}
+function saveState(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { } }
+let state = loadState();
+
+// ---------------- render helpers ----------------
+function html(strings, ...values) {
+  let out = "";
+  strings.forEach((s, i) => { out += s + (i < values.length ? (values[i] == null ? "" : String(values[i])) : ""); });
+  return out;
+}
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function qid(n) { return "q_" + n; }
+
+function renderQuestion(q) {
+  const current = state.answers[q.id];
+  const hint = q.hint ? `<div class="hint">${esc(q.hint)}</div>` : "";
+  if (q.kind === "radio") {
+    const chips = q.options.map(o => `<label class="chip"><input type="radio" name="${qid(q.id)}" value="${esc(o)}" ${current === o ? "checked" : ""}>${esc(o)}</label>`).join("");
+    return `<div class="q" data-q="${q.id}"><span class="label">${esc(q.label)}</span>${hint}<div class="chips">${chips}</div></div>`;
+  }
+  if (q.kind === "multi") {
+    const arr = Array.isArray(current) ? current : [];
+    const chips = q.options.map(o => `<label class="chip"><input type="checkbox" name="${qid(q.id)}" value="${esc(o)}" ${arr.indexOf(o) >= 0 ? "checked" : ""}>${esc(o)}</label>`).join("");
+    return `<div class="q" data-q="${q.id}"><span class="label">${esc(q.label)}</span>${hint}<div class="chips">${chips}</div></div>`;
+  }
+  if (q.kind === "scale5") {
+    const items = [1, 2, 3, 4, 5].map(n => `<label class="scale-item"><input type="radio" name="${qid(q.id)}" value="${n}" ${+current === n ? "checked" : ""} hidden><span class="face">${q.faces[n - 1]}</span><span class="word">${esc(q.words[n - 1])}</span></label>`).join("");
+    return `<div class="q" data-q="${q.id}"><span class="label">${esc(q.label)}</span>${hint}<div class="scale">${items}</div></div>`;
+  }
+  if (q.kind === "number") {
+    return `<div class="q" data-q="${q.id}"><span class="label">${esc(q.label)}</span>${hint}<input type="number" name="${qid(q.id)}" min="${q.min||0}" max="${q.max||999999}" placeholder="${esc(q.placeholder||'')}" value="${esc(current||'')}"></div>`;
+  }
+  if (q.kind === "textarea") {
+    return `<div class="q" data-q="${q.id}"><span class="label">${esc(q.label)}</span>${hint}<textarea name="${qid(q.id)}" placeholder="${esc(q.placeholder||'')}" rows="3">${esc(current||'')}</textarea></div>`;
+  }
+  // text
+  return `<div class="q" data-q="${q.id}"><span class="label">${esc(q.label)}</span>${hint}<input type="text" name="${qid(q.id)}" placeholder="${esc(q.placeholder||'')}" value="${esc(current||'')}"></div>`;
+}
+
+function renderSticker(st) {
+  if (!st) return "";
+  return `<div class="sticker"><div class="tape"></div><span class="big">${esc(st[0])}</span><span class="hand">${esc(st[1])}</span></div>`;
+}
+function renderMeme(key) {
+  const m = MEMES[key];
+  if (!m || !m.src) return "";
+  return `<figure class="meme"><img src="${esc(m.src)}" alt="${esc(m.cap || 'Aki and Pawpaw reaction')}" loading="lazy">${m.cap ? `<span class="cap">${esc(m.cap)}</span>` : ""}</figure>`;
+}
+function renderPips() {
+  const total = PAGES.filter(p => p.kind === "page").length;
+  const pips = document.getElementById("pips");
+  const curN = state.page >= 1 && state.page <= total ? state.page : (state.page > total ? total : 0);
+  if (!pips.childNodes.length) {
+    for (let i = 1; i <= total; i++) {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = String(i); b.setAttribute("aria-label", "Jump to page " + i);
+      b.addEventListener("click", () => { if (!b.disabled) { state.page = i; saveState(state); render(); } });
+      pips.appendChild(b);
+    }
+  }
+  Array.from(pips.children).forEach((b, idx) => {
+    const n = idx + 1;
+    const visited = n <= (state.maxPage || 0);
+    b.disabled = !visited || n === curN;
+    b.setAttribute("data-state", n === curN ? "current" : (visited ? "visited" : "unvisited"));
+  });
+  pips.style.display = (state.page === 0) ? "none" : "grid";
+}
+
+function render() {
+  const total = PAGES.filter(p => p.kind === "page").length;
+  const pageIdx = state.page;
+  const page = PAGES[pageIdx];
+  state.maxPage = Math.max(state.maxPage || 0, Math.min(pageIdx, total));   // for pip gating
+  saveState(state);
+  renderPips();
+  const main = document.getElementById("main");
+  const counter = document.getElementById("counter");
+  const fill = document.getElementById("fill");
+  const bus = document.getElementById("bus");
+
+  // progress UI: show "1 of 7" over content pages; welcome/thanks hidden
+  if (page.kind === "page") {
+    const n = PAGES.slice(0, pageIdx).filter(p => p.kind === "page").length + 1;
+    counter.textContent = n + " of " + total;
+    counter.style.visibility = "visible";
+    const pct = (n / total) * 100;
+    fill.style.width = pct + "%"; bus.style.left = pct + "%";
+    document.querySelector(".track").style.display = "block";
+  } else if (page.kind === "welcome") {
+    counter.style.visibility = "hidden";
+    fill.style.width = "0%"; bus.style.left = "0%";
+    document.querySelector(".track").style.display = "none";
+  } else { // thanks
+    counter.style.visibility = "hidden";
+    fill.style.width = "100%"; bus.style.left = "100%";
+    document.querySelector(".track").style.display = "block";
+  }
+  // (pips are populated by renderPips above)
+
+  if (page.kind === "welcome") {
+    main.innerHTML = `
+      <div class="card">
+        ${renderMeme("welcome")}
+        ${renderSticker(page.sticker)}
+        ${page.render()}
+        <div class="nav">
+          <span></span>
+          <button class="btn big" type="button" data-act="next">Start →</button>
+        </div>
+      </div>`;
+  } else if (page.kind === "page") {
+    const qs = page.questions.map(renderQuestion).join("");
+    main.innerHTML = `
+      <div class="card">
+        <h2>${esc(page.title)}</h2>
+        <div class="intent">${esc(page.tag)}</div>
+        ${renderMeme(page.title)}
+        ${renderSticker(page.sticker)}
+        ${qs}
+        <div class="nav">
+          <button class="btn" type="button" data-act="back">← Previous</button>
+          <button class="btn" type="button" data-act="next">${pageIdx === PAGES.length - 2 ? "Send →" : "Next →"}</button>
+        </div>
+      </div>`;
+    wireInputs();
+  } else { // thanks
+    const dl = Object.entries(state.answers).filter(([, v]) => v && (!Array.isArray(v) || v.length)).map(([k, v]) => `<dt>${esc(labelFor(k))}</dt><dd>${esc(Array.isArray(v) ? v.join(", ") : String(v))}</dd>`).join("");
+    const posted = state.posted;
+    main.innerHTML = `
+      <div class="card thanks-card">
+        <img src="./images/thanks.jpg" alt="" style="display:block; max-width:260px; width:100%; margin:0 auto 14px; border-radius:4px; box-shadow:3px 3px 0 var(--ink); border:2px solid var(--ink);" />
+        <span class="danfo">🚐💨</span>
+        <span class="huge">You too much, Thank you for your time.</span>
+        <p class="sub" style="margin-top:14px;">Thanks — the next build will be better because of this.</p>
+        ${posted ? '<p class="sub"><span class="pill" style="background:rgba(31,107,58,.18);color:#6fc48a">sent</span> Your answers are saved to the project.</p>' : '<p class="sub"><span class="pill">preview mode</span> Supabase isn\'t wired yet, so this run lives in your browser only. The owner can wire it and the next submit will land in their table.</p>'}
+        <details><summary style="cursor:pointer; font-weight:700; margin:12px 0;">See what you sent</summary><div class="summary"><dl>${dl || "<dd>(no answers)</dd>"}</dl></div></details>
+        <div class="nav" style="justify-content:center; margin-top:18px;">
+          <button class="btn" type="button" data-act="restart">Fill it again</button>
+        </div>
+      </div>`;
+  }
+
+  // wire nav
+  main.querySelectorAll("[data-act]").forEach(el => el.addEventListener("click", onAct));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function labelFor(id) {
+  for (const p of PAGES) if (p.questions) for (const q of p.questions) if (q.id === id) return q.label;
+  return id;
+}
+
+function wireInputs() {
+  document.querySelectorAll("[data-q]").forEach(div => {
+    const qid = div.getAttribute("data-q");
+    div.addEventListener("input", () => captureQ(qid, div));
+    div.addEventListener("change", () => captureQ(qid, div));
+  });
+}
+function captureQ(id, div) {
+  const q = findQ(id);
+  if (!q) return;
+  if (q.kind === "multi") {
+    state.answers[id] = Array.from(div.querySelectorAll("input:checked")).map(i => i.value);
+  } else if (q.kind === "scale5" || q.kind === "radio") {
+    const c = div.querySelector("input:checked");
+    state.answers[id] = c ? (q.kind === "scale5" ? Number(c.value) : c.value) : null;
+  } else {
+    const i = div.querySelector("input, textarea");
+    state.answers[id] = i ? i.value.trim() : "";
+  }
+  saveState(state);
+}
+function findQ(id) { for (const p of PAGES) if (p.questions) for (const q of p.questions) if (q.id === id) return q; return null; }
+
+function onAct(e) {
+  const act = e.currentTarget.getAttribute("data-act");
+  if (act === "back") { state.page = Math.max(0, state.page - 1); saveState(state); render(); return; }
+  if (act === "restart") {
+    try { localStorage.removeItem(KEY); } catch (e) { }
+    state = { page: 0, answers: {}, started_at: new Date().toISOString(), rid: newId() };
+    saveState(state); render(); return;
+  }
+  if (act === "next") {
+    // final page?
+    if (state.page === PAGES.length - 2) { // just answered last content page
+      submit();
+    } else {
+      state.page = Math.min(PAGES.length - 1, state.page + 1);
+      saveState(state);
+      render();
+    }
+  }
+}
+
+async function submit() {
+  state.completed_at = new Date().toISOString();
+  state.posted = false;
+  const payload = { rid: state.rid, started_at: state.started_at, completed_at: state.completed_at, answers: state.answers, ua: navigator.userAgent.slice(0, 300) };
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    try {
+      const headers = Object.assign({ apikey: SUPABASE_KEY, "Content-Type": "application/json" }, /^eyJ/.test(SUPABASE_KEY) ? { Authorization: "Bearer " + SUPABASE_KEY } : {});
+      // v1 path: submit_survey RPC (SQL file ships with it: rate-limits + upserts by rid; direct table insert is blocked)
+      const r = await fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/submit_survey", {
+        method: "POST", headers,
+        body: JSON.stringify({ p_rid: payload.rid, p_started_at: payload.started_at, p_answers: payload.answers, p_ua: payload.ua }),
+      });
+      state.posted = r.ok;
+      if (!r.ok) console.warn("submit failed", r.status, await r.text());
+    } catch (err) { console.warn("submit error", err); state.posted = false; }
+  }
+  // keep an append-only local log in case anything blows up server-side
+  try {
+    const log = JSON.parse(localStorage.getItem("pd_survey_log_v1") || "[]");
+    log.push(payload); localStorage.setItem("pd_survey_log_v1", JSON.stringify(log.slice(-200)));
+  } catch (e) { }
+  state.page = PAGES.length - 1; saveState(state); render();
+}
+
+// ---- admin / preview panel (localStorage dump + CSV) ----
+function wireAdmin() {
+  const key = "pd_survey_admin_v1";
+  const show = () => { try { return localStorage.getItem(key) === "1" || /ayomi|telescope/i.test(navigator.userAgent); } catch (e) { return false; } };
+  if (location.hash === "#admin") { try { localStorage.setItem(key, "1"); } catch (e) { } }
+  document.getElementById("admin").hidden = !show();
+  const dash = document.getElementById("dash-link");
+  dash.href = SUPABASE_URL ? SUPABASE_URL.replace("https://", "https://supabase.com/dashboard/project/").replace(".supabase.co", "") + "/editor" : "#";
+  if (!SUPABASE_URL) dash.textContent = "(wire a Supabase project first)";
+  document.getElementById("admin-toggle").addEventListener("click", () => {
+    const log = JSON.parse(localStorage.getItem("pd_survey_log_v1") || "[]");
+    document.getElementById("dump").textContent = JSON.stringify(log, null, 2);
+    document.getElementById("admin-panel").classList.add("on");
+  });
+  document.getElementById("admin-close").addEventListener("click", () => document.getElementById("admin-panel").classList.remove("on"));
+  document.getElementById("export-csv").addEventListener("click", () => {
+    const log = JSON.parse(localStorage.getItem("pd_survey_log_v1") || "[]");
+    const qids = Array.from(new Set(log.flatMap(l => Object.keys(l.answers || {}))));
+    const header = ["rid", "started_at", "completed_at", "ua", ...qids];
+    const rows = log.map(l => header.map(h => {
+      const v = h === "rid" ? l.rid : h === "started_at" ? l.started_at : h === "completed_at" ? l.completed_at : h === "ua" ? l.ua : (l.answers || {})[h];
+      const s = v == null ? "" : Array.isArray(v) ? v.join("; ") : String(v);
+      return '"' + s.replace(/"/g, '""') + '"';
+    }).join(","));
+    const csv = [header.join(","), ...rows].join("\n");
+    // open the CSV in a new tab so the owner can copy-paste it into a spreadsheet (artifact viewer blocks blob downloads)
+    const w = window.open(); if (w) { w.document.open(); w.document.write("<pre style='white-space:pre;font:12px monospace'>" + csv.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])) + "</pre>"); w.document.close(); } else { prompt("Copy the CSV:", csv); }
+  });
+  document.getElementById("clear-local").addEventListener("click", () => {
+    if (confirm("Clear local responses (does not affect anything already sent to Supabase)?")) {
+      try { localStorage.removeItem("pd_survey_log_v1"); } catch (e) { }
+      document.getElementById("dump").textContent = "[]";
+    }
+  });
+}
+document.getElementById("restart-foot").addEventListener("click", (e) => {
+  e.preventDefault();
+  if (confirm("Start over from page 1?")) { try { localStorage.removeItem(KEY); } catch (e) { } state = { page: 0, answers: {}, started_at: new Date().toISOString(), rid: newId() }; saveState(state); render(); }
+});
+document.getElementById("mode-pill").textContent = (SUPABASE_URL && SUPABASE_KEY) ? "live" : "preview mode";
+if (SUPABASE_URL && SUPABASE_KEY) document.getElementById("mode-pill").style.background = "rgba(31,107,58,.2)", document.getElementById("mode-pill").style.color = "#6fc48a";
+
+wireAdmin();
+render();
+</script>
+</body>
+</html>
